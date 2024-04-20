@@ -8,7 +8,6 @@ private:
     string password;
     double balance;
     
-
 public:
     User(string, string );
     static vector<User> users;
