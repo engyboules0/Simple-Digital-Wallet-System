@@ -1,0 +1,182 @@
+#include "Account.h"
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+Account::Account(string& Username, string& Password) {
+
+	username = Username;
+    password = Password;
+
+}
+Account::Account(string& Username) {
+
+    username = Username;
+   
+}
+
+Account::Account()
+{
+}
+
+string Account::getUsername() {
+	return username;
+}
+
+string Account::getPassword() {
+	return password;
+}
+
+void Account::setUsername(string& Username)
+{
+    username = Username;
+}
+
+void Account::setPassword(string& Password)
+{
+    password = Password;
+}
+
+ bool Account::check_unique_username(vector<Account>& accounts, string& username) {
+
+    for (int i = 0; i < accounts.size(); i++) {
+        if (username == accounts[i].getUsername())
+            return false;
+            
+    }
+    return true;
+}
+
+ void Account::displayAllAccounts(vector<Account>& accounts) {
+
+     for (int i = 0; i < accounts.size(); i++) {
+         cout << "Username: " << accounts[i].getUsername() << ", Password: " << accounts[i].getPassword() << endl;
+     }
+ }
+
+ void Account::addAccount(vector<Account>& accounts,string& username ,string& password ) {
+     if (accounts.empty()) {
+         Account newAccount(username, password);
+         accounts.push_back(newAccount);
+         cout << "All Accounts :" << endl;
+         displayAllAccounts(accounts);
+     }
+     else {
+         if (!check_unique_username(accounts, username)) {
+             cout << username << " Is Not Unique. Enter Another Username To Add Account: "<<endl;
+             cin >> username;
+             //to call addAccount with new username
+             addAccount(accounts, username, password);
+             //not to continue run the remain of the fn to not add account with ununique username
+             return;
+         }
+         else {
+             Account newAccount(username, password);
+             accounts.push_back(newAccount);
+             cout << "Account Added Successfully" << endl;
+             cout << endl;
+             cout << "All Accounts After addition :" << endl;
+             displayAllAccounts(accounts);
+         }
+     }
+}
+ void Account::deleteAccount(vector <Account>& accounts, string& username) {
+     bool accountFound = false;
+
+     for (int i = 0; i < accounts.size(); i++) {
+
+         if (username == accounts[i].getUsername()) {
+
+             accounts.erase(accounts.begin() + i);
+             cout << "Account Deleted successfully" << endl;
+             accountFound = true;
+             //display all accounts after deletion
+             cout << "All Accounts After Deletion :" << endl;
+             displayAllAccounts(accounts);
+             //to exit the loop after deleting account and the function exits
+             break;
+         }
+     }
+     if(!accountFound){
+
+       int option;
+       cout << "Username Not Found " << endl;
+       cout << endl;
+       cout << "To Delete Account Press 1 " << endl;
+       cout << "To Exit Press 2 " << endl;
+       cout << "Enter 1 or 2" << endl;
+       cin >> option;
+       while (option != 2) {
+           if (option == 1) {
+               cout << "Enter Your Username To Delete Its Account" << endl;
+               cin >> username;
+               //to call deleteAccount with new username
+               deleteAccount(accounts, username);
+           }
+           cout << "To Delete Account Press 1 " << endl;
+           cout << "To Exit Press 2 " << endl;
+           cout << "Enter 1 or 2" << endl;
+           cin >> option;
+
+       }
+     }
+    
+ }
+
+ void Account::editAccount(vector<Account>& accounts) {
+
+     cout << "To Edit Username Press 1" << endl;
+     cout << "To Edit Password Press 2" << endl;
+     cout << "Enter 1 or 2" << endl;
+     int choice;
+     string Username;
+     string Password;
+     string newUsername;
+     string newPassword;
+     cin >> choice;
+     switch (choice) {
+     case 1:
+         cout << "Enter The Username To Edit It " << endl;
+         cin >> Username;
+         for (int i = 0; i < accounts.size(); i++) {
+             if (Username == accounts[i].getUsername()) {
+                 cout << "Enter a New Value Of The Username " << endl;
+                 cin >> newUsername;
+                 if (check_unique_username(accounts, newUsername)) {
+                     accounts[i].setUsername(newUsername);
+                     cout << "The Edition Is successfully Completed" << endl;
+                     cout << "All Accounts After Edition :" << endl;
+                     displayAllAccounts(accounts);
+                     return;
+                 }
+                 else {
+                     cout << "Username " << newUsername << " is already taken" << endl;
+                     return;
+                 }
+             }
+         }
+         cout << "Account With " << Username << " Username Is Not Found" << endl;
+         break;
+     case 2:
+         cout << "Enter Username To Edit Its Password" << endl;
+         cin >> Username;
+         for (int i = 0; i < accounts.size(); i++) {
+             if (Username == accounts[i].getUsername()) {
+                 cout << "Enter a New Value Of The Password " << endl;
+                 cin >> newPassword;
+                 accounts[i].setPassword(newPassword);
+                 cout << "The Edition Is successfully Completed" << endl;
+                 cout << "All Accounts After Edition :" << endl;
+                 displayAllAccounts(accounts);
+                 return;
+             }
+         }
+         cout << "Account With " << Username << " Username Is Not Found" << endl;
+         break;
+     default:
+         cout << "Invalid Input" << endl;
+
+         break;
+     }
+ }
+
